@@ -24,8 +24,15 @@ int main(){
     }
 
     std::cout << sum << std::endl;
-    std::cout << list1.size() << std::endl;
-    std::cout << list1.at(999) << " " << list2.at(999) << std::endl;
+
+    sum = 0;
+
+    for (int i : list1){
+        int count = std::count(list2.begin(), list2.end(), i);
+        sum += i * count;
+    }
+    std::cout << sum << std::endl;
+    
     infile.close();
 
     return 0;
