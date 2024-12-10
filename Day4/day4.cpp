@@ -97,6 +97,73 @@ bool downRight(std::vector<std::vector<char>>& vec, std::vector<std::vector<char
     return false;
 }
 
+bool masDownRight(std::vector<std::vector<char>>& vec, std::vector<std::vector<char>>::size_type iy,
+               std::vector<char>::size_type ix){
+    if (iy > vec.size() - 3 || ix > vec.at(iy).size() - 3)
+        return false;
+    if (vec.at(iy).at(ix) == M && vec.at(iy + 1).at(ix + 1) == A && vec.at(iy + 2).at(ix + 2) == S)
+        return true;
+    return false;
+}
+
+bool masDownLeft(std::vector<std::vector<char>>& vec, std::vector<std::vector<char>>::size_type iy,
+               std::vector<char>::size_type ix){
+    if (iy > vec.size() - 3 || ix < 2)
+        return false;
+    if (vec.at(iy).at(ix) == M && vec.at(iy + 1).at(ix - 1) == A && vec.at(iy + 2).at(ix - 2) == S)
+        return true;
+    return false;
+}
+
+bool masUpRight(std::vector<std::vector<char>>& vec, std::vector<std::vector<char>>::size_type iy,
+               std::vector<char>::size_type ix){
+    if (iy < 2 || ix > vec.at(iy).size() - 3)
+        return false;
+    if (vec.at(iy).at(ix) == M && vec.at(iy - 1).at(ix + 1) == A && vec.at(iy - 2).at(ix + 2) == S)
+        return true;
+    return false;
+}
+
+bool masUpLeft(std::vector<std::vector<char>>& vec, std::vector<std::vector<char>>::size_type iy,
+               std::vector<char>::size_type ix){
+    if (iy < 2 || ix < 2)
+        return false;
+    if (vec.at(iy).at(ix) == M && vec.at(iy - 1).at(ix - 1) == A && vec.at(iy - 2).at(ix - 2) == S)
+        return true;
+    return false;
+}
+
+bool checkSquare(std::vector<std::vector<char>>& vec, std::vector<std::vector<char>>::size_type iy,
+               std::vector<char>::size_type ix){
+    if (iy > vec.size() - 3 || ix > vec.at(iy).size() - 3)
+        return false;
+    if ((masDownRight(vec, iy, ix) && masDownLeft(vec, iy, ix + 2)) ||
+        (masDownRight(vec, iy, ix) && masUpRight(vec, iy + 2, ix)) ||
+        (masDownLeft(vec, iy, ix + 2) && masUpLeft(vec, iy + 2, ix + 2)) ||
+        (masUpRight(vec, iy + 2, ix) && masUpLeft(vec, iy + 2, ix + 2)))
+        return true;
+    return false;
+}
+
+int findXMas(std::vector<std::vector<char>>& vec){
+    int xMasSum = 0;
+    std::vector<std::vector<char>>::size_type i = 0;
+    while (i < vec.size() - 2){
+        std::vector<char>::size_type j = 0;
+        while (j < vec.at(i).size() - 2){
+            std::cout << "checking square at " << i << " " << j << std::endl;
+            if (checkSquare(vec, i, j)){
+                std::cout << "MAS found in square at " << i << " " << j << std::endl;
+                xMasSum++;
+            }
+            j++;
+        }
+        i++;
+        std::cout << "After increment, i is: " << i << std::endl;
+    }
+    return xMasSum;
+}
+
 int findMatches(std::vector<std::vector<char>>& vec){
     int matchSum = 0;
     for (std::vector<std::vector<char>>::size_type i = 0; i < vec.size(); i++){
@@ -156,14 +223,19 @@ int main(){
 
     std::vector<std::vector<char>> testVec;
 
-    getInput(testVec, "input.txt");
-    for(std::vector<char> list : testVec){
+     getInput(testVec, "input.txt");
+   /* for(std::vector<char> list : testVec){
         for (char let : list){
             std::cout << let << " ";
         }
         std::cout << std::endl;
     }
     int matches = findMatches(testVec);
-    std::cout << matches << std::endl;
+    std::cout << matches << std::endl; */
+
+    //Part 2:
+
+    int xMas = findXMas(testVec);
+    std::cout << xMas << std::endl;
     return 0;
 }
